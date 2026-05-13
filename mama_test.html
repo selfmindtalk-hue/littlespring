@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>엄마 컨디션 자가진단</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink-light: #FBEAF0;
+    --pink-mid: #ED93B1;
+    --pink: #D4537E;
+    --pink-dark: #993556;
+    --pink-deep: #4B1528;
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b6b6b;
+    --text-tertiary: #aaa;
+    --bg: #fdfaf8;
+    --card-bg: #ffffff;
+    --border: #e8ddd8;
+    --border-hover: #D4537E;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px 60px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 520px;
+  }
+
+  /* INTRO */
+  .intro {
+    text-align: center;
+    padding: 48px 24px;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    animation: fadeUp 0.5s ease;
+  }
+  .intro-icon { font-size: 48px; margin-bottom: 20px; }
+  .intro h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+  .intro p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.85;
+    margin-bottom: 28px;
+  }
+
+  /* PROGRESS */
+  .progress-wrap {
+    margin-bottom: 28px;
+  }
+  .progress-bar {
+    height: 3px;
+    background: #edddd7;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ED93B1, #D4537E);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-align: right;
+    letter-spacing: 0.04em;
+  }
+
+  /* QUESTION */
+  .q-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 28px 24px 24px;
+    animation: fadeUp 0.35s ease;
+  }
+  .q-num {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--pink);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .q-text {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+  .q-sub {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .opts { display: flex; flex-direction: column; gap: 9px; }
+
+  .opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fdfaf8;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 13px 15px;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    color: var(--text-primary);
+    transition: all 0.15s ease;
+    width: 100%;
+    line-height: 1.5;
+  }
+  .opt:hover {
+    border-color: var(--pink-mid);
+    background: #fff5f8;
+  }
+  .opt.selected {
+    border-color: var(--pink) !important;
+    background: var(--pink-light) !important;
+    color: var(--pink-deep) !important;
+  }
+  .opt.selected .opt-emoji {
+    transform: scale(1.15);
+  }
+  .opt-emoji {
+    font-size: 20px;
+    min-width: 26px;
+    text-align: center;
+    transition: transform 0.15s ease;
+    display: inline-block;
+  }
+
+  /* NAV */
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+  }
+  .btn-back {
+    background: none;
+    border: none;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 8px 4px;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: color 0.15s;
+  }
+  .btn-back:hover { color: var(--text-secondary); }
+  .btn-back.hidden { visibility: hidden; pointer-events: none; }
+
+  .btn-next {
+    background: var(--pink);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 11px 28px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn-next:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+  .btn-next:active:not(:disabled) { transform: translateY(0); }
+  .btn-next:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* RESULT */
+  .result-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 36px 28px 28px;
+    animation: fadeUp 0.5s ease;
+  }
+  .result-icon { font-size: 46px; margin-bottom: 16px; text-align: center; }
+  .result-badge {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--pink-dark);
+    background: var(--pink-light);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .result-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .result-msg {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.85;
+    background: var(--pink-light);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    margin-bottom: 18px;
+  }
+  .result-tip {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    border-left: 2px solid var(--pink-mid);
+    padding-left: 14px;
+    margin-bottom: 28px;
+  }
+  .result-tip strong {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--pink);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .btn-retry {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 24px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.15s;
+    width: 100%;
+  }
+  .btn-retry:hover { border-color: var(--pink-mid); color: var(--pink); background: var(--pink-light); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SCREENS */
+  .screen { display: none; }
+  .screen.active { display: block; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- INTRO -->
+  <div id="intro" class="screen active">
+    <div class="intro">
+      <div class="intro-icon">🌿</div>
+      <h1>엄마 컨디션 자가진단</h1>
+      <p>아이에게 날카롭게 말하고 싶어지는 그 순간,<br>
+      사실 그건 아이 탓이 아닐 수도 있어요.<br>
+      지금 내 마음 탱크가 얼마나 찼는지<br>7가지 질문으로 확인해볼게요.</p>
+      <button class="btn-next" onclick="startTest()">시작하기</button>
+    </div>
+  </div>
+
+  <!-- TEST -->
+  <div id="test" class="screen">
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="prog-label">1 / 7</div>
+    </div>
+    <div class="q-card" id="q-card">
+      <!-- rendered by JS -->
+    </div>
+    <div class="nav">
+      <button class="btn-back" id="btn-back" onclick="prevQ()">← 이전</button>
+      <button class="btn-next" id="btn-next" onclick="nextQ()" disabled>다음</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result" class="screen">
+    <!-- rendered by JS -->
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    num: "01",
+    text: "어젯밤, 잠은 좀 잤나요?",
+    sub: "아이 깨우고 재우고... 내 수면은 어땠어요?",
+    opts: [
+      { e: "😴", t: "충분히 잔 것 같아요. 개운해요.", s: 0 },
+      { e: "🥱", t: "깼다 잠들었다, 들쑥날쑥했어요.", s: 1 },
+      { e: "😵", t: "거의 못 잔 것 같아요. 눈이 뻑뻑해요.", s: 2 },
+      { e: "🤷", t: "솔직히 기억도 안 나요. 그냥 쓰러졌어요.", s: 2 },
+    ]
+  },
+  {
+    num: "02",
+    text: "요즘 몸을 좀 움직이고 있나요?",
+    sub: "아이 옮기는 것 말고, 내 몸을 위한 움직임이요.",
+    opts: [
+      { e: "🏃", t: "네, 최근에 땀 흘린 날이 있었어요.", s: 0 },
+      { e: "🚶", t: "걷기 정도는 하고 있어요.", s: 1 },
+      { e: "🪑", t: "앉아서 보내는 시간이 대부분이에요.", s: 2 },
+      { e: "😶", t: "내 몸 챙기는 건 생각도 못 했어요.", s: 2 },
+    ]
+  },
+  {
+    num: "03",
+    text: "마지막으로 '제대로' 먹은 게 언제예요?",
+    sub: "아이 남긴 거 대충 때우는 거 말고요.",
+    opts: [
+      { e: "🍱", t: "오늘도 따뜻하게 챙겨 먹었어요.", s: 0 },
+      { e: "🥪", t: "간단하게라도 챙기고 있어요.", s: 1 },
+      { e: "😬", t: "급하게 대충 먹는 날이 많아요.", s: 2 },
+      { e: "😔", t: "뭘 먹었는지 잘 모르겠어요.", s: 2 },
+    ]
+  },
+  {
+    num: "04",
+    text: "이번 주 혼자만의 시간이 있었나요?",
+    sub: "아이 재운 후 핸드폰 보는 거 빼고요. 진짜로요.",
+    opts: [
+      { e: "☕", t: "네, 커피 한 잔이라도 혼자 마셨어요.", s: 0 },
+      { e: "📱", t: "핸드폰 보는 시간 정도요…", s: 1 },
+      { e: "🫥", t: "혼자 있을 틈이 없었어요.", s: 2 },
+      { e: "😮‍💨", t: "혼자 있어도 머릿속이 아이 생각뿐이에요.", s: 2 },
+    ]
+  },
+  {
+    num: "05",
+    text: "요즘 사람들을 너무 많이 만나진 않았나요?",
+    sub: "아니면 반대로 너무 고립되어 있진 않고요?",
+    opts: [
+      { e: "🙂", t: "적당히 균형 잡힌 것 같아요.", s: 0 },
+      { e: "😅", t: "약속이 많아서 조금 지쳤어요.", s: 1 },
+      { e: "🏠", t: "거의 집에만 있었어요. 사람이 그리워요.", s: 1 },
+      { e: "😩", t: "양쪽 다예요. 지치고 외로워요.", s: 2 },
+    ]
+  },
+  {
+    num: "06",
+    text: "최근에 마음에 담아둔 좋은 문장이나 순간이 있나요?",
+    sub: "책이든 드라마든 대화든, 작은 것도 괜찮아요.",
+    opts: [
+      { e: "📖", t: "있어요. 요즘 그게 작은 위안이 돼요.", s: 0 },
+      { e: "🤔", t: "떠오르긴 하는데 뭔지 흐릿해요.", s: 1 },
+      { e: "😶‍🌫️", t: "그런 여유가 없었어요.", s: 2 },
+      { e: "😢", t: "요즘 그냥 버티는 중이에요.", s: 2 },
+    ]
+  },
+  {
+    num: "07",
+    text: "아이에게 날카롭게 말하고 싶어질 때, 어떤 느낌인가요?",
+    sub: "솔직하게 골라주세요. 여기선 다 괜찮아요.",
+    opts: [
+      { e: "😌", t: "잠깐 참으면 금방 괜찮아져요.", s: 0 },
+      { e: "😬", t: "억누르지만 나중에 죄책감이 들어요.", s: 1 },
+      { e: "😤", t: "요즘은 참는 것도 점점 힘들어요.", s: 2 },
+      { e: "😭", t: "나 왜 이러지? 싶어서 나 자신이 싫을 때도 있어요.", s: 3 },
+    ]
+  }
+];
+
+const results = [
+  {
+    range: [0, 5],
+    icon: "🌿",
+    title: "마음 탱크가 꽤 잘\n채워져 있네요",
+    msg: "요즘의 당신은\n자기 자신을 제법 잘 돌보고 있는 사람 같아요.\n잘 쉬고,\n조금 움직이고,\n마음을 환기시키는 시간을\n틈틈이 만들고 있네요.\n아이에게 다정할 수 있다는 건\n엄마 마음에도 아직 여백이 있다는 뜻이니까요.",
+    tip: "화가 나기 전에\n\"나 지금 좀 지쳤나?\"\n잠깐 들여다보는 지금의 습관,\n계속 잘 간직해 주세요."
+  },
+  {
+    range: [6, 9],
+    icon: "🌤️",
+    title: "마음이 조금씩\n고단해지고 있어요",
+    msg: "아주 지친 건 아니지만,\n조금씩 에너지가 빠져나가고 있는 시기 같아요.\n이럴 때는\n아이보다 먼저\n엄마 마음이 예민해지곤 해요.\n괜찮아요.\n지금 알아차렸으니까요 :)",
+    tip: "오늘은 딱 한 가지만\n나를 위해 해봐요.\n따뜻한 밥 한 끼,\n조금 이른 잠,\n10분 산책 같은 작은 것들로도\n마음은 꽤 회복되더라고요."
+  },
+  {
+    range: [10, 13],
+    icon: "🌧️",
+    title: "많이 애쓰고\n있었네요",
+    msg: "아이를 사랑하는 마음으로\n하루하루 버티다 보니,\n정작 내 마음은\n한참 뒤로 밀려 있었을지도 몰라요.\n말끝이 날카로워지는 날이 있는 건\n엄마가 부족해서가 아니라,\n마음과 몸이 너무 오래 긴장해 있었기 때문일 거예요.",
+    tip: "\"나 요즘 좀 힘들어.\"\n그 말을\n누군가에게 조용히 꺼내보세요.\n마음을 말로 꺼내는 순간,\n숨통이 조금 트이기도 하니까요."
+  },
+  {
+    range: [14, 99],
+    icon: "🫂",
+    title: "정말 오래\n버텨왔군요",
+    msg: "지금까지 잘 견뎌왔어요.\n무너질 것 같은 날에도\n아이 밥을 챙기고,\n하루를 굴려내고,\n또 어떻게든 버텨냈네요.\n그런데 사람은\n계속 버티기만 하면\n점점 자기 자신을 잃어버리기도 하더라고요.\n오늘만큼은\n좋은 엄마가 되려 하기보다,\n그냥 조금 지친 한 사람으로\n쉬어가도 괜찮아요.",
+    tip: "혼자 견디지 않아도 괜찮아요.\n도움을 요청하는 건\n약해서가 아니라,\n나와 아이를 함께 지키려는\n용기일지도 모르니까요."
+  }
+];
+
+let curr = 0;
+let answers = new Array(questions.length).fill(null);
+
+function show(id) {
+  ['intro','test','result'].forEach(s => {
+    document.getElementById(s).classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
+}
+
+function startTest() {
+  curr = 0;
+  answers = new Array(questions.length).fill(null);
+  show('test');
+  renderQ();
+}
+
+function renderQ() {
+  const q = questions[curr];
+  const pct = (curr / questions.length) * 100;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = (curr + 1) + ' / ' + questions.length;
+
+  const backBtn = document.getElementById('btn-back');
+  backBtn.className = 'btn-back' + (curr === 0 ? ' hidden' : '');
+
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = curr === questions.length - 1 ? '결과 보기' : '다음';
+  nextBtn.disabled = answers[curr] === null;
+
+  const sel = answers[curr];
+  document.getElementById('q-card').innerHTML = `
+    <div class="q-num">Q${q.num}</div>
+    <div class="q-text">${q.text}</div>
+    <div class="q-sub">${q.sub}</div>
+    <div class="opts">${q.opts.map((o, i) =>
+      `<button class="opt${sel === i ? ' selected' : ''}" onclick="pick(${i})">
+        <span class="opt-emoji">${o.e}</span>
+        <span>${o.t}</span>
+      </button>`
+    ).join('')}</div>
+  `;
+}
+
+function pick(i) {
+  answers[curr] = i;
+  document.getElementById('btn-next').disabled = false;
+  renderQ();
+}
+
+function nextQ() {
+  if (answers[curr] === null) return;
+  if (curr < questions.length - 1) {
+    curr++;
+    renderQ();
+  } else {
+    showResult();
+  }
+}
+
+function prevQ() {
+  if (curr > 0) { curr--; renderQ(); }
+}
+
+function showResult() {
+  const total = answers.reduce((sum, a, i) => {
+    if (a === null) return sum;
+    return sum + questions[i].opts[a].s;
+  }, 0);
+
+  let res = results[results.length - 1];
+  for (const r of results) {
+    if (total >= r.range[0] && total <= r.range[1]) { res = r; break; }
+  }
+
+  document.getElementById('result').innerHTML = `
+    <div class="result-card">
+      <div class="result-icon">${res.icon}</div>
+      <div style="text-align:center">
+        <span class="result-badge">나의 현재 상태</span>
+      </div>
+      <div class="result-title" style="text-align:center">${res.title.replace(/\n/g, '<br>')}</div>
+      <div class="result-msg">${res.msg.replace(/\n/g, '<br>')}</div>
+      <div class="result-tip">
+        <strong>오늘의 작은 마음챙김 🌱</strong>
+        ${res.tip.replace(/\n/g, '<br>')}
+      </div>
+      <button class="btn-retry" onclick="startTest()">↺ 다시 해보기</button>
+    </div>
+  `;
+  show('result');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
